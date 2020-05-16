@@ -34,7 +34,7 @@ if(process.env.PUBLISH_FIGSHARE_GROUP_ID && isNaN(parseInt(process.env.PUBLISH_F
 const values = {
 
     // Public keys are copied into webpack build (i.e. go client-side)
-    publicKeys: ['pubsweet-client', 'validations', 'orcid-paths', 'stripe-publishable-key', 'figshare-widgets-hostname'],
+    publicKeys: ['pubsweet-client', 'validations', 'orcid-paths', 'stripe-publishable-key', 'figshare-widgets-hostname', 'email'],
 
     authsome: {
         mode: path.resolve(__dirname, 'authsome-mode.js')
@@ -161,7 +161,6 @@ const values = {
 
 // For values we want to expose to the front-end, which also happen to have private API keys defined as well
 // within the same config set, extract those into a completely separate config key area.
-
 values['orcid-paths'] = {
     orcidUrl: values.orcid.orcidUrl,
     orcidDisplayUrl: values.orcid.orcidDisplayUrl,
@@ -170,5 +169,9 @@ values['orcid-paths'] = {
 };
 
 values['stripe-publishable-key'] = (values.stripe && values.stripe.publishableKey) || null;
+
+values['email'] = {
+    help: values['workflow-send-email'].editorsMailingListAddress
+};
 
 module.exports = values;

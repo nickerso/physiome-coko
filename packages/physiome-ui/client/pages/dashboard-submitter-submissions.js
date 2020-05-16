@@ -91,21 +91,17 @@ const _DashboardSubmitterSubmissions = ({className, history, children}) => {
     };
 
     return (
-        <div className={className}>
+        <SubmissionsListing history={history} columns={SimpleSubmissionListingColumns} heading='Submissions'
+            allFilterPhases={AllPhases} defaultActiveFilterPhases={ActivePhases} showFilter={false}
+            showOnHoldSubmissions={null} renderNoSubmissions={renderNoSubmissions}>
 
-            <SubmissionsListing history={history} columns={SimpleSubmissionListingColumns} heading='Submissions'
-                allFilterPhases={AllPhases} defaultActiveFilterPhases={ActivePhases} showFilter={false}
-                showOnHoldSubmissions={null} renderNoSubmissions={renderNoSubmissions}>
+            <PrimaryInlineButton icon={<FaPlus />} bordered={true} onClick={handleCreateNewSubmission}>
+                Create New Submission
+            </PrimaryInlineButton>
 
-                <PrimaryInlineButton icon={<FaPlus />} bordered={true} onClick={handleCreateNewSubmission}>
-                    Create New Submission
-                </PrimaryInlineButton>
+            {children}
 
-                {children}
-
-            </SubmissionsListing>
-
-        </div>
+        </SubmissionsListing>
     );
 };
 

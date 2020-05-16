@@ -76,20 +76,16 @@ const _DashboardActiveSubmissions = ({className, history, children}) => {
     };
 
     return (
-        <div className={className}>
+        <SubmissionsListing history={history} heading='Active Submissions' allFilterPhases={AllPhases} defaultActiveFilterPhases={ActivePhases}
+            showOnHoldSubmissions={showOnHoldSubmissions} renderAdditionalFilters={renderAdditionalFilters}>
 
-            <SubmissionsListing history={history} heading='Active Submissions' allFilterPhases={AllPhases} defaultActiveFilterPhases={ActivePhases}
-                showOnHoldSubmissions={showOnHoldSubmissions} renderAdditionalFilters={renderAdditionalFilters}>
+            <PrimaryInlineButton icon={<FaPlus />} bordered={true} onClick={handleCreateNewSubmission}>
+                Create New Submission
+            </PrimaryInlineButton>
 
-                <PrimaryInlineButton icon={<FaPlus />} bordered={true} onClick={handleCreateNewSubmission}>
-                    Create New Submission
-                </PrimaryInlineButton>
+            {children}
 
-                {children}
-
-            </SubmissionsListing>
-
-        </div>
+        </SubmissionsListing>
     );
 };
 

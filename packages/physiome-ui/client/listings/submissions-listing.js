@@ -11,6 +11,7 @@ import { HeaderHolder } from 'component-task-listing/client/components/task-list
 
 import SubmissionStatusPill from "../components/submission-status-pill";
 
+const EditorsMailingListAddress = require('config').email.help;
 
 const SubmissionListingColumns = [
 
@@ -104,12 +105,29 @@ const _SubmissionsListing = ({className, history, heading, allFilterPhases=[], d
                 {children}
 
             </TaskListing>
+
+            <aside>Questions about the submission system? <a href={`mailto:${EditorsMailingListAddress}`}>Email our editors</a>.</aside>
+
         </div>
     );
 };
 
 const SubmissionsListing = styled(_SubmissionsListing)`
-  padding: 32px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    & > ${TaskListing} {
+        padding: 32px;
+        flex-grow: 1;
+    }
+
+    & aside {
+        padding: 0 32px 32px;
+        text-align: center;
+        font-family: NovcentoSansWideBook, sans-serif;
+        font-size: 17px;
+    }
 `;
 
 export default SubmissionsListing;
