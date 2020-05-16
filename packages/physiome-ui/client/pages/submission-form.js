@@ -5,10 +5,15 @@ import { WorkflowDescriptionContext } from 'client-workflow-model';
 import { taskFormForFormDefinition } from 'component-task-form/client';
 
 import { BasicMessage, BasicMessageButton } from 'component-overlay';
+import UserMessageHolder, { Message, ErrorMessage } from 'component-authentication/client/UserMessageHolder';
+import { SmallPrimaryInlineButton } from 'ds-theme/components/inline-button';
 import styled from 'styled-components';
 
 const SubmissionDefaultType = 'submission';
 const SubmissionDefaultTaskName = 'submission';
+
+const EditorsMailingListAddress = require('config').email.help;
+const BaseURL = require('config')['pubsweet-client'].baseUrl;
 
 
 function PageSubmissionForm({ match, history, children, submissionTaskName = SubmissionDefaultTaskName }) {
@@ -84,6 +89,9 @@ function PageSubmissionForm({ match, history, children, submissionTaskName = Sub
 
             <SubmissionFormPageHeadingHolder className="message-holder">
                 {children}
+                <UserMessageHolder type="default">
+                    <Message>Have a question about this submission? <a href={`mailto:${EditorsMailingListAddress}?subject=Query about submission ${instanceId}&body=I have a question about submission <${BaseURL}/submission/${instanceId}>%0D%0A--------------------%0D%0A(Please replace this section with your question)`}>Email our editors</a>.</Message>
+                </UserMessageHolder>
             </SubmissionFormPageHeadingHolder>
             <SubmissionFormPageHeadingHolder>
                 {heading ? <WorkflowHeroHeading>{heading}</WorkflowHeroHeading> : null}
