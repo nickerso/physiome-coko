@@ -90,7 +90,7 @@ function PageSubmissionForm({ match, history, children, submissionTaskName = Sub
             <SubmissionFormPageHeadingHolder className="message-holder">
                 {children}
                 <UserMessageHolder type="default">
-                    <Message>Have a question about this submission? <a href={`mailto:${EditorsMailingListAddress}?subject=Query about submission ${instanceId}&body=I have a question about submission <${BaseURL}/submission/${instanceId}>%0D%0A--------------------%0D%0A(Please replace this section with your question)`}>Email our editors</a>.</Message>
+                    <Message>Have a question about this submission? <a href={`mailto:${EditorsMailingListAddress}?subject=Query about submission ${instanceId}&body=I have a question about submission <${BaseURL}/details/${instanceId}>%0D%0A--------------------%0D%0A(Please replace this section with your question)`}>Email our editors</a>.</Message>
                 </UserMessageHolder>
             </SubmissionFormPageHeadingHolder>
             <SubmissionFormPageHeadingHolder>
