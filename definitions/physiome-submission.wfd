@@ -17,14 +17,18 @@ enum SubmissionKind {
     Original => "original",
     Retrospective => "retrospective",
     Review => "review",
-    Letter => "letter"
+    Letter => "letter",
+    Draft => "draft",
+    Special => "special"
 }
 
 mapping "DisplayedSubmissionKind" on SubmissionKind {
     Original => "Original Article",
     Retrospective => "Retrospective Article",
     Review => "Review",
-    Letter => "Letter"
+    Letter => "Letter",
+    Draft => "Draft",
+    Special => "Special Issue"
 }
 
 
@@ -132,6 +136,19 @@ instance Submission {
         resultsInPapersOverlap: Boolean,
         sameModelInPapers: Boolean,
         manuscriptAccepted: Boolean,
+
+        suitableForPhysiome: Boolean,
+        manuscriptFormatted: Boolean,
+        modelImplExecutable: Boolean,
+        reprodGoalAchieved: Boolean,
+        modelReproducible: Boolean,
+        modificationExplained: Boolean,
+        modelAppropriateStandards: Boolean,
+        paramSourceStated: Boolean,
+        provenanceClear: Boolean,
+        overlapPaperManuscriptCode: Boolean,
+        articleFitForPublication: Boolean,
+
         paymentSkipped: Boolean <state, input:exclude, default:false>,
         curationNotes: String,
 
@@ -166,6 +183,9 @@ instance Submission {
             hidden, unpublishedChanges, rejectionReason, rejectionOther, revisionsNote,
     	    allFilesPresent, resultsMatch, modelAnnotated, primaryPaperExists, resultsInPapersOverlap, sameModelInPapers, manuscriptAccepted,
     	    curator, curationNotes,
+
+            suitableForPhysiome, manuscriptFormatted, modelImplExecutable, reprodGoalAchieved, modelReproducible, modificationExplained, modelAppropriateStandards, paramSourceStated, provenanceClear, overlapPaperManuscriptCode, articleFitForPublication,
+
     	    publishingPmrDetails
         }
 
@@ -372,25 +392,17 @@ instance Submission {
 
             { DetailPanel, <administrator>, (phase == SubmissionPhase.Submitted), heading:"Curation Checks", children:{
 
-                { Checkbox => primaryPaperExists, label: "Primary paper exists", showAsRequired:true }
-
-                { Checkbox => sameModelInPapers, label: "Same model in manuscript and primary paper", showAsRequired:true,
-                    help:"The constituents equations are the same and the experimental design is the same in both papers. Additional modifications are allowed in the Physiome paper." }
-
-                { Checkbox => resultsMatch, label: "Results of the model match the results present in primary article",
-                    help:"The results presented in the Physiome paper are reproducible from the primary paper, using the submitted files." }
-
-                { Checkbox => resultsInPapersOverlap, label: "Results in manuscript and primary paper overlap", showAsRequired:true,
-                    help:"Some of the results simulated by the model files and presented in the Physiome paper are the same as presented in the primary paper." }
-
-                { Checkbox => allFilesPresent, label: "All files are present within the model and successfully execute", showAsRequired:true,
-                    help:"All files needed to reproduce the results are submitted and works." }
-
-                { Checkbox => modelAnnotated, label: "Model is fully annotated",
-                    help:"This is not required for acceptance and publication of the Physiome paper, but will provide a record for future curation." }
-
-                { Checkbox => manuscriptAccepted, label: "Manuscript accepted", showAsRequired:true,
-                    help:"Manuscript is in legible and follows the template." }
+                { Checkbox => suitableForPhysiome, label: "Submission suitable for Physiome.", showAsRequired: true, help: "" }
+                { Checkbox => manuscriptFormatted, label: "Manuscript correctly formatted.", showAsRequired: true, help: "" }
+                { Checkbox => modelImplExecutable, label: "Model implementation executable.", showAsRequired: true, help: "" }
+                { Checkbox => reprodGoalAchieved, label: "Reproducible targets clearly identified.", showAsRequired: true, help: "" }
+                { Checkbox => modelReproducible, label: "Model is reproducible.", showAsRequired: true, help: "" }
+                { Checkbox => modificationExplained, label: "Model modifications clearly explained.", showAsRequired: true, help: "" }
+                { Checkbox => modelAppropriateStandards, label: "Appropriate standards used.", showAsRequired: true, help: "" }
+                { Checkbox => paramSourceStated, label: "Parameter sources clearly identified.", showAsRequired: true, help: "" }
+                { Checkbox => provenanceClear, label: "Provenance is clear.", showAsRequired: true, help: "" }
+                { Checkbox => overlapPaperManuscriptCode, label: "Overlap between Primary Paper - Physiome Manuscript - Code.", showAsRequired: true, help: "" }
+                { Checkbox => articleFitForPublication, label: "Article fit for publication.", showAsRequired: true, help: "" }
 
             } }
 
@@ -399,6 +411,27 @@ instance Submission {
                     (phase in [SubmissionPhase.Decision, SubmissionPhase.Revision, SubmissionPhase.Payment, SubmissionPhase.Paid, SubmissionPhase.SkipPayment,
                         SubmissionPhase.Publish, SubmissionPhase.Reject, SubmissionPhase.Published]),
                     heading:"Curation Checks", children:{
+
+                { Checkbox => suitableForPhysiome, label: "Submission suitable for Physiome.", showAsRequired: true, readOnly: true }
+                { Checkbox => manuscriptFormatted, label: "Manuscript correctly formatted.", showAsRequired: true, readOnly: true }
+                { Checkbox => modelImplExecutable, label: "Model implementation executable.", showAsRequired: true, readOnly: true }
+                { Checkbox => reprodGoalAchieved, label: "Reproducible targets clearly identified.", showAsRequired: true, readOnly: true }
+                { Checkbox => modelReproducible, label: "Model is reproducible.", showAsRequired: true, readOnly: true }
+                { Checkbox => modificationExplained, label: "Model modifications clearly explained.", showAsRequired: true, readOnly: true }
+                { Checkbox => modelAppropriateStandards, label: "Appropriate standards used.", showAsRequired: true, readOnly: true }
+                { Checkbox => paramSourceStated, label: "Parameter sources clearly identified.", showAsRequired: true, readOnly: true }
+                { Checkbox => provenanceClear, label: "Provenance is clear.", showAsRequired: true, readOnly: true }
+                { Checkbox => overlapPaperManuscriptCode, label: "Overlap between Primary Paper - Physiome Manuscript - Code.", showAsRequired: true, readOnly: true }
+                { Checkbox => articleFitForPublication, label: "Article fit for publication.", showAsRequired: true, readOnly: true }
+
+            } }
+
+
+            { DetailPanel, <administrator>,
+                    (phase in [SubmissionPhase.Submitted,
+                        SubmissionPhase.Decision, SubmissionPhase.Revision, SubmissionPhase.Payment, SubmissionPhase.Paid, SubmissionPhase.SkipPayment,
+                        SubmissionPhase.Publish, SubmissionPhase.Reject, SubmissionPhase.Published]),
+                    heading:"Deprecated Curation Checks", children:{
 
                 { Checkbox => primaryPaperExists, label: "Primary paper exists", showAsRequired:true, readOnly:true }
 
@@ -413,7 +446,9 @@ instance Submission {
                 { Checkbox => modelAnnotated, label: "Model is fully annotated", readOnly:true }
 
                 { Checkbox => manuscriptAccepted, label: "Manuscript accepted", showAsRequired:true, readOnly:true }
+
             } }
+
 
             { DetailPanel, <administrator>, heading:"Published PMR Workspace", children: {
 
