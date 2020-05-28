@@ -55,6 +55,15 @@ const HelpContent = styled.span`
     font-size: ${th('helpPopover.fontSize')};
     color: ${th('helpPopover.textColor')};
     max-width: ${th('helpPopover.maximumWidth')};
+
+    & p {
+      margin: 0 0 0.5em;
+    }
+
+    & ul {
+      margin: 0;
+      padding-left: 1em;
+    }
     
 `;
 
@@ -70,9 +79,11 @@ function FormFieldCheckbox({className, data, binding, description, formDefinitio
             return null;
         }
 
+        const helpContent = {dangerouslySetInnerHTML: {__html: options.help}};
+
         return (
             <FormStyledHelp>
-                <PopoverTrigger onVisibilityChange={v => setHelpIsShown(v)} renderContent={(props) => <HelpContent>{options.help}</HelpContent>}>
+                <PopoverTrigger onVisibilityChange={v => setHelpIsShown(v)} renderContent={(props) => <HelpContent {...helpContent}></HelpContent>}>
                     <FaQuestionCircle />
                 </PopoverTrigger>
             </FormStyledHelp>

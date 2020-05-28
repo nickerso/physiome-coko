@@ -392,17 +392,17 @@ instance Submission {
 
             { DetailPanel, <administrator>, (phase == SubmissionPhase.Submitted), heading:"Curation Checks", children:{
 
-                { Checkbox => suitableForPhysiome, label: "Submission suitable for Physiome.", showAsRequired: true, help: "" }
-                { Checkbox => manuscriptFormatted, label: "Manuscript correctly formatted.", showAsRequired: true, help: "" }
-                { Checkbox => modelImplExecutable, label: "Model implementation executable.", showAsRequired: true, help: "" }
-                { Checkbox => reprodGoalAchieved, label: "Reproducible targets clearly identified.", showAsRequired: true, help: "" }
-                { Checkbox => modelReproducible, label: "Model is reproducible.", showAsRequired: true, help: "" }
-                { Checkbox => modificationExplained, label: "Model modifications clearly explained.", showAsRequired: true, help: "" }
-                { Checkbox => modelAppropriateStandards, label: "Appropriate standards used.", showAsRequired: true, help: "" }
-                { Checkbox => paramSourceStated, label: "Parameter sources clearly identified.", showAsRequired: true, help: "" }
-                { Checkbox => provenanceClear, label: "Provenance is clear.", showAsRequired: true, help: "" }
-                { Checkbox => overlapPaperManuscriptCode, label: "Overlap between Primary Paper - Physiome Manuscript - Code.", showAsRequired: true, help: "" }
-                { Checkbox => articleFitForPublication, label: "Article fit for publication.", showAsRequired: true, help: "" }
+                { Checkbox => suitableForPhysiome, label: "Submission suitable for Physiome.", showAsRequired: true, help: "<p>Editor responsible.</p><ul><li>In scope.</li><li>Primary Paper exists and is peer reviewed or under review. If letter, it should refer to a previous Physiome Paper.</li><li>Author overlap with primary paper.</li><li>Manuscript readable (proper language, good order, coherent).</li><li>Manuscript is written using Physiome template.</li></ul>" }
+                { Checkbox => manuscriptFormatted, label: "Manuscript correctly formatted.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>All figures are before the references (except appendices).</li><li>All authors correctly formatted, including capitals and initials.<br /></li><li>All authors have affiliations, and the affiliations correctly formatted.</li><li>The countries are not abbreviated in the affiliations.</li><li>Keywords present and make sense.</li><li>Corresponding author marked with an asterisk and their email supplied.</li><li>References have the correct format.</li></ul>" }
+                { Checkbox => modelImplExecutable, label: "Model implementation executable.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>All files needed to run the model are supplied.</li><li>SedML or python script for plotting present.</li><li>Manuscript contains all information needed to run the scripts.</li><li>Model produces the results presented in the manuscript, both reproduced results and additional predictions.</li><li>Software, versions, modules, libraries, settings, time steps, algorithms, etc are stated in the manuscript.</li></ul>" }
+                { Checkbox => reprodGoalAchieved, label: "Reproducible targets clearly identified.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>Reproducibility goals stated and overlap with Primary Paper.</li></ul>" }
+                { Checkbox => modelReproducible, label: "Model is reproducible.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>Model produces the results presented in the manuscript, both reproduced results and additional predictions.</li></ul>" }
+                { Checkbox => modificationExplained, label: "Model modifications clearly explained.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>Equations supplied for changes in the model from the Primary Paper (if needed).</li><li>Parameter sources stated.</li></ul>" }
+                { Checkbox => modelAppropriateStandards, label: "Appropriate standards used.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>Model is in standardised format or has a good reason not to be.</li><li>Annotated if possible.</li><li>Documentation available, either as comments in the code or described in the paper.</li><li>Appropriate modularity.</li></ul>" }
+                { Checkbox => paramSourceStated, label: "Parameter sources clearly identified.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>Parameter sources clearly identified. Primary paper is sufficient as a source.</li></ul>" }
+                { Checkbox => provenanceClear, label: "Provenance is clear.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>Reference back to previous versions of the model. In a way that can be picked up by altmetrics etc.</li></ul>" }
+                { Checkbox => overlapPaperManuscriptCode, label: "Overlap between Primary Paper - Physiome Manuscript - Code.", showAsRequired: true, help: "<p>Curator responsible.</p><ul><li>If all results overlap, check random equations.</li><li>If something seems fishy, start pulling on that thread. Check the code vs the equations more fully, and/or ask the authors about the discrepancy.</li></ul>" }
+                { Checkbox => articleFitForPublication, label: "Article fit for publication.", showAsRequired: true, help: "<p>Editor responsible.</p><ul><li>Go through the curators evaluation and determine if the required goals for that type of model are fulfilled.</li><li>Publish after payment.</li></ul>" }
 
             } }
 
