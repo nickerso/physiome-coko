@@ -80,7 +80,7 @@
 
 
 
-[x] Overlap between Primary Paper - Physiome Manuscript - Code.
+[x] Overlap between Primary Paper - Manuscript - Code.
 
   Curator responsible.
 
