@@ -1,5 +1,5 @@
 const { models } = require('component-workflow-model/model');
-const { Submission } = models;
+const { Submission, Identity } = models;
 const logger = require('workflow-utils/logger-with-prefix')('PhysiomeWorkflowTasks/FigshareArticlePublisher');
 const crypto = require('crypto');
 const fs = require('fs');
@@ -422,6 +422,18 @@ class FigshareArticlePublisher {
 
         const jsonObject = submission.toJSON();
 
+        const [curator] = await Promise.all([
+            Identity.find(jsonObject.curatorId)
+        ]);
+        if(curator) {
+            delete curator.tokens;
+            delete curator.groups;
+
+            delete curator.emailValidationToken;
+            delete curator.emailValidationTokenExpire;
+            delete curator.emailValidationEmailSendTimes;
+        }
+
         const submitter = jsonObject.submitter;
         if(submitter) {
             delete submitter.tokens;
@@ -431,6 +443,8 @@ class FigshareArticlePublisher {
             delete submitter.emailValidationTokenExpire;
             delete submitter.emailValidationEmailSendTimes;
         }
+
+        jsonObject.curator = curator
 
         const jsonData = JSON.stringify(jsonObject, null, 4);
 
