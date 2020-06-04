@@ -459,8 +459,8 @@ class FigshareArticlePublisher {
 
                 let filePath = path.join((resultingPath || ArticlePublishedDirectory), `${submission.manuscriptId}.json`);
                 fs.writeFile(filePath, jsonData, {encoding:'utf8', flag:"w"}, (error) => {
-                    if(err) {
-                        logger.error(`creating local published directory failed due to: ${err.toString()}`);
+                    if(error) {
+                        logger.error(`creating local published file failed due to: ${error.toString()}`);
                         return reject(err);
                     }
                     return resolve(filePath);
