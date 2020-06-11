@@ -181,10 +181,10 @@ instance Submission {
 
         fields "curation" {
             hidden, unpublishedChanges, rejectionReason, rejectionOther, revisionsNote,
-    	    allFilesPresent, resultsMatch, modelAnnotated, primaryPaperExists, resultsInPapersOverlap, sameModelInPapers, manuscriptAccepted,
+    	    allFilesPresent, resultsMatch, primaryPaperExists, resultsInPapersOverlap, sameModelInPapers, manuscriptAccepted,
     	    curator, curationNotes,
 
-            suitableForPhysiome, manuscriptFormatted, modelImplExecutable, reprodGoalAchieved, modelReproducible, modificationExplained, modelAppropriateStandards, paramSourceStated, provenanceClear, overlapPaperManuscriptCode, articleFitForPublication,
+            suitableForPhysiome, manuscriptFormatted, modelImplExecutable, reprodGoalAchieved, modelReproducible, modificationExplained, modelAppropriateStandards, paramSourceStated, provenanceClear, overlapPaperManuscriptCode, articleFitForPublication, modelAnnotated,
 
     	    publishingPmrDetails
         }
@@ -398,11 +398,12 @@ instance Submission {
                 { Checkbox => reprodGoalAchieved, label: "Reproducible targets clearly identified.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>Reproducibility goals stated and overlap with Primary Paper.</li></ul>" }
                 { Checkbox => modelReproducible, label: "Model is reproducible.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>Model produces the results presented in the manuscript, both reproduced results and additional predictions.</li></ul>" }
                 { Checkbox => modificationExplained, label: "Model modifications clearly explained.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>Equations supplied for changes in the model from the Primary Paper (if needed).</li><li>Parameter sources stated.</li></ul>" }
-                { Checkbox => modelAppropriateStandards, label: "Appropriate standards used.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>Model is in standardised format or has a good reason not to be.</li><li>Annotated if possible.</li><li>Documentation available, either as comments in the code or described in the paper.</li><li>Appropriate modularity.</li></ul>" }
+                { Checkbox => modelAppropriateStandards, label: "Appropriate standards used.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>Model is in standardised format or has a good reason not to be.</li><li>Documentation available, either as comments in the code or described in the paper.</li><li>Appropriate modularity.</li></ul>" }
                 { Checkbox => paramSourceStated, label: "Parameter sources clearly identified.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>Parameter sources clearly identified. Primary paper is sufficient as a source.</li></ul>" }
                 { Checkbox => provenanceClear, label: "Provenance is clear.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>Reference back to previous versions of the model. In a way that can be picked up by altmetrics etc.</li></ul>" }
                 { Checkbox => overlapPaperManuscriptCode, label: "Overlap between Primary Paper - Manuscript - Code.", showAsRequired: false, help: "<p>Curator responsible.</p><ul><li>If all results overlap, check random equations.</li><li>If something seems fishy, start pulling on that thread. Check the code vs the equations more fully, and/or ask the authors about the discrepancy.</li></ul>" }
                 { Checkbox => articleFitForPublication, label: "Article fit for publication.", showAsRequired: false, help: "<p>Editor responsible.</p><ul><li>Go through the curators evaluation and determine if the required goals for that type of model are fulfilled.</li><li>Publish after payment.</li></ul>" }
+                { Checkbox => modelAnnotated, label: "Annotated model.", showAsRequred: false, help: "<p>Curator responsible.</p><ul><li>Model is fully annotated</li></ul>" }
 
             } }
 
@@ -423,6 +424,7 @@ instance Submission {
                 { Checkbox => provenanceClear, label: "Provenance is clear.", showAsRequired: false, readOnly: true }
                 { Checkbox => overlapPaperManuscriptCode, label: "Overlap between Primary Paper - Manuscript - Code.", showAsRequired: false, readOnly: true }
                 { Checkbox => articleFitForPublication, label: "Article fit for publication.", showAsRequired: false, readOnly: true }
+                { Checkbox => modelAnnotated, label: "Annotated model.", showAsRequired: false, readOnly:true }
 
             } }
 
@@ -442,8 +444,6 @@ instance Submission {
                 { Checkbox => resultsInPapersOverlap, label: "Results in manuscript and primary paper overlap", showAsRequired:true, readOnly:true }
 
                 { Checkbox => allFilesPresent, label: "All files are present within the model and successfully execute", showAsRequired:true, readOnly:true }
-
-                { Checkbox => modelAnnotated, label: "Model is fully annotated", readOnly:true }
 
                 { Checkbox => manuscriptAccepted, label: "Manuscript accepted", showAsRequired:true, readOnly:true }
 

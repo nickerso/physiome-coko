@@ -60,7 +60,6 @@
   Curator responsible.
 
   - Model is in standardised format or has a good reason not to be.
-  - Annotated if possible.
   - Documentation available, either as comments in the code or described in the paper.
   - Appropriate modularity.
 
@@ -95,4 +94,11 @@
   - Go through the curators evaluation and determine if the required goals for that type of model are fulfilled.
   - Publish after payment.
 
+
+
+[x] Annotated model.
+
+  Curator responsible.
+
+  - Model is fully annotated
 
