@@ -159,6 +159,7 @@ instance Submission {
         figshareArticleDoi: String <input:exclude>,
         publishingPmrDetails: JSON,
 
+        paymentAmount: Integer,
         paymentSessionId: String <input:exclude>,
         paymentCompleted: Boolean <input:exclude, default:false>
     }
@@ -177,6 +178,10 @@ instance Submission {
         fields "read-only" {
             phase, manuscriptId, submitter, submissionDate, figshareArticleDoi,
             publishDate, figshareArticleId, revisionsNote
+        }
+
+        fields "payment-fields" {
+            paymentAmount
         }
 
         fields "curation" {
@@ -208,6 +213,7 @@ instance Submission {
 
         allow <administrator> [write, read] on "submit"
         allow <administrator> [write, read] on "curation"
+        allow <administrator> [write, read] on "payment-fields"
         allow <administrator> [read] on "read-only"
         allow <administrator> [create, destroy]
         allow <administrator> [task]

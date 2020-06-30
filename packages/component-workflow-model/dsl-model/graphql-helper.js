@@ -38,6 +38,10 @@ class GraphQLHelper {
 
             const type = (e.type === "File" && (e.fileLabels === true || e.fileTypes === true)) ? "ExtendedFile" : e.type;
 
+            if(type === 'Integer') {
+                return `${e.field}: Int`;
+            }
+
             if(e.array || (listingFilter && e.listingFilterMultiple === true)) {
                 if(inputFilter && e.input !== true) {
                     return null;
