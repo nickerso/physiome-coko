@@ -15,13 +15,13 @@ export default function useFormValueBinding(formData, binding, initialState = nu
     function handleInputChange(e) {
         if(formData && binding) {
             const value = (e.target.type === 'checkbox') ? !!e.target.checked : e.target.value;
-            formData.setFieldValue(binding, value);
+            formData.setFieldValue(binding, vt(value));
         }
     }
 
     function setModelValue(newValue) {
         if(formData && binding) {
-            formData.setFieldValue(binding, newValue);
+            formData.setFieldValue(binding, vt(newValue));
         }
     }
 
