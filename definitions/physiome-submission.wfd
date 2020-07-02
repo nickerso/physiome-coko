@@ -462,6 +462,13 @@ instance Submission {
 
             } }
 
+            { DetailPanel, <administrator>, (phase in [SubmissionPhase.Decision, SubmissionPhase.Payment, SubmissionPhase.Paid]),
+                    heading:"Payment", children:{
+
+                { Integer => paymentAmount, label:"Curation Fee (USD)", placeholder:300 }
+
+            } }
+
             { DetailPanel, <administrator>, (phase in [SubmissionPhase.Submitted, SubmissionPhase.Revision, SubmissionPhase.Decision, SubmissionPhase.Payment,
                                                             SubmissionPhase.Paid, SubmissionPhase.SkipPayment, SubmissionPhase.Reject]),
                     heading:"Decisions", children:{
