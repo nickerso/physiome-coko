@@ -1,6 +1,7 @@
 import FormFieldDate from './fields/form-field-date';
 import FormFieldTextArea from './fields/form-field-textarea';
 import FormFieldText from './fields/form-field-text';
+import FormFieldInteger from './fields/form-field-integer';
 import FormFieldBannerMessage from './fields/form-field-banner-message';
 import FormFieldFileUploader from './fields/form-field-file-uploader';
 import FormFieldButton from './fields/form-field-button';
@@ -35,6 +36,7 @@ const FormFieldRegistry = {
     'Date' : FormFieldDate,
     'TextArea' : FormFieldTextArea,
     'Text' : FormFieldText,
+    'Integer' : FormFieldInteger,
     'ORCID' : FormFieldORCID,
     'BannerMessage' : FormFieldBannerMessage,
     'Button' : FormFieldButton,
