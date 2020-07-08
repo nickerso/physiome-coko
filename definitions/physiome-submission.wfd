@@ -159,7 +159,7 @@ instance Submission {
         figshareArticleDoi: String <input:exclude>,
         publishingPmrDetails: JSON,
 
-        paymentAmount: Integer,
+        paymentAmount: Integer <default:300>,
         paymentSessionId: String <input:exclude>,
         paymentCompleted: Boolean <input:exclude, default:false>
     }
@@ -462,13 +462,6 @@ instance Submission {
 
             } }
 
-            { DetailPanel, <administrator>, (phase in [SubmissionPhase.Decision, SubmissionPhase.Payment, SubmissionPhase.Paid]),
-                    heading:"Payment", children:{
-
-                { Integer => paymentAmount, label:"Curation Fee (USD)", placeholder:300 }
-
-            } }
-
             { DetailPanel, <administrator>, (phase in [SubmissionPhase.Submitted, SubmissionPhase.Revision, SubmissionPhase.Decision, SubmissionPhase.Payment,
                                                             SubmissionPhase.Paid, SubmissionPhase.SkipPayment, SubmissionPhase.Reject]),
                     heading:"Decisions", children:{
@@ -612,6 +605,12 @@ instance Submission {
         { revisionsNote => (length(revisionsNote) > 0), "A message to the submitter is required detailing what revisions are required." }
     }
 
+    validations "payment-approval" {
+
+        { paymentAmount => (paymentAmount >= 1 && paymentAmount <= 300), "The curation fee must be between 1-300" }
+
+    }
+
 
     form "decisions" {
 
@@ -677,7 +676,11 @@ instance Submission {
 
             { Button, (phase == SubmissionPhase.Decision), outcome:"payment", label:"Approve for Payment",
                 confirmation:"Are you sure you want to approve this submission for curation fee payment? The submitter will be emailed and asked to pay the curation processing charge.",
-                confirmationHeading:"Request Curation Fee Payment", confirmationAffirmativeLabel: "Send Payment Request", confirmationNegativeLabel: "Cancel" }
+                confirmationHeading:"Request Curation Fee Payment", confirmationAffirmativeLabel: "Send Payment Request", confirmationNegativeLabel: "Cancel", confirmationValidation:["payment-approval"], children: {
+
+                { Integer => paymentAmount, label: "Curation Fee (USD)" }
+
+             } }
 
             { Button, (phase == SubmissionPhase.Decision), outcome:"skip-payment", label:"Waive Payment",
                 confirmation:"Are you sure you want to approve this submission and also waive the payment of the APC fee?",
