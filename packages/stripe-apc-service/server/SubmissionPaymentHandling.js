@@ -66,7 +66,7 @@ async function checkCheckoutSession(checkoutSessionId) {
 }
 
 
-async function createCheckoutSession(submissionId, emailAddress = null) {
+async function createCheckoutSession(submissionId, paymentAmount, emailAddress = null) {
 
     // FIXME: shift this into main config.
     const checkoutDetails = {
@@ -78,7 +78,7 @@ async function createCheckoutSession(submissionId, emailAddress = null) {
         line_items: [{
             name: "Physiome Journal Curation fee",
             description: "Physiome Journal article curation fee",
-            amount: 30000,
+            amount: paymentAmount * 100,
             currency: "usd",
             quantity: 1
         }]
@@ -132,7 +132,7 @@ exports.generateCheckoutSessionForSubmission = async function generateCheckoutSe
         // Otherwise, we need to create a new session. After creating the new session we need to ensure that the same payment session we started with
         // is still in place.
 
-        return createCheckoutSession(submission.id, identity ? identity.email : null).then(async session => {
+        return createCheckoutSession(submission.id, submission.paymentAmount, identity ? identity.email : null).then(async session => {
 
             logger.debug(`received new checkout session via Stripe API (submissionId = ${submission.id}, sessionId = ${session.id}) `);
 
