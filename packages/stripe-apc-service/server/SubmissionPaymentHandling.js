@@ -107,23 +107,24 @@ exports.generateCheckoutSessionForSubmission = async function generateCheckoutSe
     // If the payment has already been completed then we don't generate a new checkout submission.
     if(submission.paymentCompleted === true) {
         logger.debug(`new checkout session requested on already paid submission (submissionId = ${submission.id}) `);
+        // TODO somehow move the workflow state forward to the correct place??
         return {status:SubmissionCheckoutStatus.AlreadyPaid};
     }
 
     const currentSessionValid = submission.paymentSessionId ? checkCheckoutSession(submission.paymentSessionId) : Promise.resolve(CHECK_SESSION_RESULT_INVALID);
-    const originalSubmissionId = submission.paymentSessionId;
+    const originalPaymentSesssionId = submission.paymentSessionId;
 
     return currentSessionValid.then(checkSessionResult => {
 
         // If the checkout session is still valid, we re-use it again for the user.
         if(checkSessionResult === CHECK_SESSION_RESULT_VALID) {
-            logger.debug(`checkout session for submission was still valid (and not paid), returning existing checkout session (submissionId = ${submissionId}) `);
+            logger.debug(`checkout session for submission was still valid (and not paid), returning existing checkout session (submissionId = ${submission.id}) `);
             return {status:SubmissionCheckoutStatus.Success, sessionId:submission.paymentSessionId};
         }
 
         // If the submission has already been paid, then we return that fact to the client (allowing them to refresh the data on the page for example).
         if(checkSessionResult === CHECK_SESSION_RESULT_PAID) {
-            logger.debug(`checkout session for submission was still valid but was already paid, returning 'already paid' status to client (submissionId = ${submissionId}) `);
+            logger.debug(`checkout session for submission was still valid but was already paid, returning 'already paid' status to client (submissionId = ${submission.id}) `);
             return {status:SubmissionCheckoutStatus.AlreadyPaid};
         }
 
@@ -140,7 +141,7 @@ exports.generateCheckoutSessionForSubmission = async function generateCheckoutSe
             try {
 
                 const r = await submission.patchFields(['paymentSessionId'], {
-                    paymentSessionId: originalSubmissionId
+                    paymentSessionId: originalPaymentSesssionId
                 });
 
                 // If we can't update the submission with the new checkout session id, then we return a conflict error.
