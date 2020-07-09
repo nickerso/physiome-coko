@@ -342,8 +342,36 @@ async function processSuccessfulPayment(submissionId, checkoutSessionId, session
 
 
 async function processCancelledPayment(submissionId) {
+    const submission = await Submission.find(submissionId);
+    const paymentSessionId = submission.paymentSessionId;
+    if(!submission) {
+	logger.warn(`unable to find submission '${submissionId}' for processing payment cancellation`);
+	return Promise.resolve(true);
+    }
+    return stripe.checkout.sessions.retrieve(paymentSessionId).catch(err => {
+        // If the checkout session can't be found, then the checkout session is considered invalid.
+        if(err.statusCode === 404) {
+            return CHECK_SESSION_RESULT_INVALID;
+        }
+        logger.error("retrieval of checkout submission from Stripe failed due to: " + err.toString());
+        // again, nothing to cancel..
+        return Promise.resolve(true);
 
-    return Promise.resolve(true);
+    }).then(session => { // no error handling here?
+        return stripe.paymentIntents.cancel(session.payment_intent);
+    }).then(async paymentIntention => {
+        if (paymentIntention.status === 'canceled') {
+            logger.info(`payment session for submission '${submissionId}' canceled`);
+            submission.paymentSessionId = null
+            const r = await submission.patchFields(['paymentSessionId'], {
+                paymentSessionId: paymentSessionId,
+            });
+            if(!r) {
+                logger.warn("unable to clear payment id due to conflict during update");
+            }
+        }
+        return Promise.resolve(true);
+    });
 }
 
 
