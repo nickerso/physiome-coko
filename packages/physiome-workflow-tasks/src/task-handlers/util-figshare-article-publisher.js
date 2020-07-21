@@ -422,9 +422,7 @@ class FigshareArticlePublisher {
 
         const jsonObject = submission.toJSON();
 
-        const [curator] = await Promise.all([
-            Identity.find(jsonObject.curatorId)
-        ]);
+        const curator = await Identity.find(jsonObject.curatorId).catch((e) => null);
         if(curator) {
             delete curator.tokens;
             delete curator.groups;
