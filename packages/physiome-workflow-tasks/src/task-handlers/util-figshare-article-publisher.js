@@ -19,6 +19,7 @@ const ArticleCustomFieldNames = PublishFigshareOptions.customFieldNames;
 const ArticlePublishSkipPublishing = (PublishFigshareOptions.skipPublishingStage === true);
 
 const ArticlePublishedDirectory = config.get('workflow-publish-output.directory');
+const endpointSet = config.get('figsharePublish.endpointSet');
 
 
 
@@ -196,7 +197,7 @@ class FigshareArticlePublisher {
 
         const figshareApi = this.figshareApi;
 
-        const submissionFuture = !submission.figshareArticleId ? figshareApi.createNewArticle(articleData).then(articleId => {
+        const submissionFuture = !submission.figshareArticleId ? figshareApi.create(endpointSet, articleData).then(articleId => {
 
             submission.figshareArticleId = "" + articleId;
 
@@ -206,7 +207,7 @@ class FigshareArticlePublisher {
 
             ).catch(err => {
 
-                figshareApi.deleteArticle(articleId);
+                figshareApi.delete(endpointSet, articleId);
                 return Promise.reject(err);
 
             }).then(() => {
@@ -214,7 +215,7 @@ class FigshareArticlePublisher {
                 return {articleId:articleId, didFixAuthors: (authorFixCount > 0)};
             });
 
-        }) : figshareApi.updateArticle(submission.figshareArticleId, articleData).then(r => {
+        }) : figshareApi.update(endpointSet, submission.figshareArticleId, articleData).then(r => {
 
             return {articleId: submission.figshareArticleId, didFixAuthors: (authorFixCount > 0)};
         });
@@ -306,7 +307,7 @@ class FigshareArticlePublisher {
                 return {articleId, fieldsModified};
             }
 
-            return figshareApi.publishArticle(articleId).then(() => {
+            return figshareApi.publish(endpointSet, articleId).then(() => {
                 return {articleId, fieldsModified};
             });
         });
@@ -325,12 +326,12 @@ class FigshareArticlePublisher {
 
         const figshareApi = this.figshareApi;
 
-        return figshareApi.getArticleFileListing(articleId).then(async (currentFiles) => {
+        return figshareApi.getFileListing(endpointSet, articleId).then(async (currentFiles) => {
 
             if(currentFiles && currentFiles.length) {
 
                 for(let i = 0; i < currentFiles.length; i++) {
-                    await figshareApi.deleteFile(articleId, currentFiles[i]);
+                    await figshareApi.deleteFile(endpointSet, articleId, currentFiles[i]);
                 }
             }
 
@@ -369,7 +370,7 @@ class FigshareArticlePublisher {
 
         return _md5ForS3File(s3Object).then(md5 => {
 
-            return figshareApi.initiateFileUpload(articleId, file.fileName, file.fileByteSize, md5);
+            return figshareApi.initiateFileUpload(endpointSet, articleId, file.fileName, file.fileByteSize, md5);
 
         }).then(({fileInfo, uploadInfo}) => {
 
@@ -391,7 +392,7 @@ class FigshareArticlePublisher {
                         return reject(error);
                     });
 
-                    const req = figshareApi.uploadFilePart(articleId, fileInfo, part);
+                    const req = figshareApi.uploadFilePart(endpointSet, articleId, fileInfo, part);
 
                     req.on("error", (error) => {
                         logger.warn(`figshare part upload request failed due to: ${error.toString()} (submission=${submission.id}, articleId=${articleId})`);
@@ -410,7 +411,7 @@ class FigshareArticlePublisher {
 
         }).then(({fileInfo}) => {
 
-            return figshareApi.completeFileUpload(articleId, fileInfo);
+            return figshareApi.completeFileUpload(endpointSet, articleId, fileInfo);
         });
     }
 

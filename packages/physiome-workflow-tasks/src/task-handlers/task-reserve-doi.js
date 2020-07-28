@@ -4,6 +4,8 @@ const logger = require('workflow-utils/logger-with-prefix')('PhysiomeWorkflowTas
 const { transaction } = require('objection');
 
 const { FigshareApi } = require('figshare-publish-service');
+const config = require('config');
+const endpointSet = config.get('figsharePublish.endpointSet');
 
 
 module.exports = function _setupReserveDoiTask(client) {
@@ -68,7 +70,7 @@ function _reserveDoiForSubmission(submission) {
         });
     }
 
-    const createArticleIdPromise = !submission.figshareArticleId ? FigshareApi.createNewArticle(articleData).then(articleId => {
+    const createArticleIdPromise = !submission.figshareArticleId ? FigshareApi.create(endpointSet, articleData).then(articleId => {
 
         submission.figshareArticleId = "" + articleId;
 
@@ -78,7 +80,7 @@ function _reserveDoiForSubmission(submission) {
 
         ).catch(err => {
 
-            FigshareApi.deleteArticle(articleId);
+            FigshareApi.delete(endpointSet, articleId);
             return Promise.reject(err);
 
         }).then(() => {
@@ -90,12 +92,12 @@ function _reserveDoiForSubmission(submission) {
 
     return createArticleIdPromise.then(figshareArticleId => {
 
-        return FigshareApi.reserveArticleDoi(figshareArticleId).then(() => {
+        return FigshareApi.reserveDoi(endpointSet, figshareArticleId).then(() => {
             return figshareArticleId;
         });
 
     }).then(figshareArticleId => {
 
-        return FigshareApi.getArticle(figshareArticleId);
+        return FigshareApi.get(endpointSet, figshareArticleId);
     });
 }

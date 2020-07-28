@@ -9,6 +9,7 @@ const { FigshareApi, NotFoundError } = require('figshare-publish-service');
 
 const config = require('config');
 const ArticlePublishedDirectory = config.get('workflow-publish-output.directory');
+const endpointSet = config.get('figsharePublish.endpointSet');
 
 
 module.exports = function _setupRejectionCleanupTask(client) {
@@ -77,7 +78,7 @@ async function _cleanupForRejectedSubmission(submission) {
 
     logger.debug(`will delete figshare article (submissionId = ${submission.id}, phase = ${submission.phase}, articleId = ${articleId})`);
 
-    return FigshareApi.deleteArticle(articleId).then(() => {
+    return FigshareApi.delete(endpointSet, articleId).then(() => {
 
         logger.debug(`did delete figshare article (submissionId = ${submission.id}, phase = ${submission.phase}, articleId = ${articleId})`);
 

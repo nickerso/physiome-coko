@@ -133,6 +133,7 @@ const values = {
     },
 
     figsharePublish: {
+        endpointSet: process.env.PUBLISH_FIGSHARE_ENDPOINT_SET || "Article",
         type: process.env.PUBLISH_FIGSHARE_TYPE || "journal contribution",
         groupId: process.env.PUBLISH_FIGSHARE_GROUP_ID ? (parseInt(process.env.PUBLISH_FIGSHARE_GROUP_ID)) : null,
         categories: process.env.PUBLISH_FIGSHARE_CATEGORIES || "4, 12, 135",  /* Biochemistry, Cell Biology, Computational  Biology */

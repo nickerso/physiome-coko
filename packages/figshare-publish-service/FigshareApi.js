@@ -3,17 +3,33 @@ const logger = require('@pubsweet/logger');
 
 const FigshareApiEndpoints = {
 
-    CreateArticle: "account/articles",
-    DeleteArticle: (id) => { return `account/articles/${encodeURI(id)}` },
-    GetArticle: (id) => { return `account/articles/${encodeURI(id)}` },
-    UpdateArticle: (id) => { return `account/articles/${encodeURI(id)}` },
-    PublishArticle: (id) => { return `account/articles/${encodeURI(id)}/publish` },
-    ReserveArticleDOI: (id) => { return `account/articles/${encodeURI(id)}/reserve_doi` },
+    Article: {
+        Create: "account/articles",
+        Delete: (id) => { return `account/articles/${encodeURI(id)}` },
+        Get: (id) => { return `account/articles/${encodeURI(id)}` },
+        Update: (id) => { return `account/articles/${encodeURI(id)}` },
+        Publish: (id) => { return `account/articles/${encodeURI(id)}/publish` },
+        ReserveDoi: (id) => { return `account/articles/${encodeURI(id)}/reserve_doi` },
+        InitiateFileUpload: (id) => { return `account/articles/${encodeURI(id)}/files` },
+        CompleteFileUpload: (id, fileInfo) =>  { return `account/articles/${encodeURI(id)}/files/${encodeURI(fileInfo.id)}` },
+        FilesListing: (id) => { return `account/articles/${encodeURI(id)}/files` },
+        DeleteFile: (id, fileInfo) => { return `account/articles/${encodeURI(id)}/files/${encodeURI(fileInfo.id)}`; },
+    },
 
-    InitiateFileUpload: (id) => { return `account/articles/${encodeURI(id)}/files` },
-    CompleteFileUpload: (id, fileInfo) =>  { return `account/articles/${encodeURI(id)}/files/${encodeURI(fileInfo.id)}` },
-    ArticleFilesListing: (id) => { return `account/articles/${encodeURI(id)}/files` },
-    DeleteFile: (id, fileInfo) => { return `account/articles/${encodeURI(id)}/files/${encodeURI(fileInfo.id)}`; },
+    Collection: {
+        Create: "account/collections",
+        Delete: (id) => { return `account/collections/${encodeURI(id)}` },
+        Get: (id) => { return `account/collections/${encodeURI(id)}` },
+        Update: (id) => { return `account/collections/${encodeURI(id)}` },
+        Publish: (id) => { return `account/collections/${encodeURI(id)}/publish` },
+        ReserveDoi: (id) => { return `account/collections/${encodeURI(id)}/reserve_doi` },
+
+        InitiateFileUpload: (id) => { return `account/collections/${encodeURI(id)}/files` },
+        CompleteFileUpload: (id, fileInfo) =>  { return `account/collections/${encodeURI(id)}/files/${encodeURI(fileInfo.id)}` },
+        FilesListing: (id) => { return `account/collections/${encodeURI(id)}/files` },
+        DeleteFile: (id, fileInfo) => { return `account/collections/${encodeURI(id)}/files/${encodeURI(fileInfo.id)}`; },
+
+    },
 
     UploadFilePart: (fileInfo, partNo) => { return `${fileInfo.upload_url}/${partNo}` },
 
@@ -36,9 +52,10 @@ class FigshareApi {
         this.apiToken = apiToken;
     }
 
-    createNewArticle(articleData) {
+    // generic
+    create(endpoint, data) {
 
-        return this._performPostRequest(FigshareApiEndpoints.CreateArticle, articleData).then((r) => {
+        return this._performPostRequest(FigshareApiEndpoints[endpoint].Create, data).then((r) => {
             return r.location;
         }).then((location) => {
             return this._performGetRequest(location);
@@ -47,39 +64,39 @@ class FigshareApi {
         });
     }
 
-    deleteArticle(articleID) {
+    delete(endpoint, id) {
 
-        return this._performDeleteRequest(FigshareApiEndpoints.DeleteArticle(articleID));
+        return this._performDeleteRequest(FigshareApiEndpoints[endpoint].Delete(id));
     }
 
-    getArticle(articleID) {
+    get(endpoint, id) {
 
-        return this._performGetRequest(FigshareApiEndpoints.GetArticle(articleID));
+        return this._performGetRequest(FigshareApiEndpoints[endpoint].Get(id));
     }
 
-    updateArticle(articleID, articleData) {
+    update(endpoint, id, data) {
 
-        return this._performPutRequest(FigshareApiEndpoints.UpdateArticle(articleID), articleData);
+        return this._performPutRequest(FigshareApiEndpoints[endpoint].Update(id), data);
     }
 
-    publishArticle(articleID) {
+    publish(endpoint, id) {
 
-        return this._performPostRequest(FigshareApiEndpoints.PublishArticle(articleID));
+        return this._performPostRequest(FigshareApiEndpoints[endpoint].Publish(id));
     }
 
-    reserveArticleDoi(articleID) {
+    reserveDoi(endpoint, id) {
 
-        return this._performPostRequest(FigshareApiEndpoints.ReserveArticleDOI(articleID));
+        return this._performPostRequest(FigshareApiEndpoints[endpoint].ReserveDoi(id));
     }
 
-    getArticleFileListing(articleID) {
+    getFileListing(endpoint, id) {
 
-        return this._performGetRequest(FigshareApiEndpoints.ArticleFilesListing(articleID));
+        return this._performGetRequest(FigshareApiEndpoints[endpoint].FilesListing(id));
     }
 
-    initiateFileUpload(articleID, fileName, fileSize, md5) {
+    initiateFileUpload(endpoint, id, fileName, fileSize, md5) {
 
-        const initiateURL = FigshareApiEndpoints.InitiateFileUpload(articleID);
+        const initiateURL = FigshareApiEndpoints[endpoint].InitiateFileUpload(id);
         const data = {
             md5: md5,
             name: fileName,
@@ -102,7 +119,7 @@ class FigshareApi {
         });
     }
 
-    uploadFilePart(articleID, fileInfo, part, data=null) {
+    uploadFilePart(endpoint, id, fileInfo, part, data=null) {
 
         // Note: returns a request object, allowing a stream of data for the part to be piped to the PUT response
         if(!data) {
@@ -112,16 +129,15 @@ class FigshareApi {
         return this._performPutRequest(FigshareApiEndpoints.UploadFilePart(fileInfo, part.partNo), data, false);
     }
 
-    completeFileUpload(articleID, fileInfo) {
+    completeFileUpload(endpoint, id, fileInfo) {
 
-        return this._performPostRequest(FigshareApiEndpoints.CompleteFileUpload(articleID, fileInfo));
+        return this._performPostRequest(FigshareApiEndpoints[endpoint].CompleteFileUpload(id, fileInfo));
     }
 
-    deleteFile(articleID, fileInfo) {
+    deleteFile(endpoint, id, fileInfo) {
 
-        return this._performDeleteRequest(FigshareApiEndpoints.DeleteFile(articleID, fileInfo));
+        return this._performDeleteRequest(FigshareApiEndpoints[endpoint].DeleteFile(id, fileInfo));
     }
-
 
     getAuthor(authorID) {
         return this._performGetRequest(FigshareApiEndpoints.GetAuthor(authorID));

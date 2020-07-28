@@ -9,6 +9,8 @@ const { FigshareApi } = require('figshare-publish-service');
 const request = require('request');
 
 const logger = require('workflow-utils/logger-with-prefix')('PhysiomeWorkflowTasks/PMRArchiveUpload');
+const config = require('config');
+const endpointSet = config.get('figsharePublish.endpointSet');
 
 
 async function uploadPMRArchiveToFigshare(articleId, submission) {
@@ -66,7 +68,7 @@ async function uploadPMRArchiveToFigshare(articleId, submission) {
         return p.then(({size, md5}) => {
 
             logger.debug(`initiate figshare file upload (submission=${submission.id}, articleId=${articleId}, fileName=pmr-model-archive.tar.gz, byteCount=${size}, md5=${md5})`);
-            return FigshareApi.initiateFileUpload(articleId, 'pmr-model-archive.tar.gz', size, md5);
+            return FigshareApi.initiateFileUpload(endpointSet, articleId, 'pmr-model-archive.tar.gz', size, md5);
 
         }).then(({fileInfo, uploadInfo}) => {
 
@@ -89,7 +91,7 @@ async function uploadPMRArchiveToFigshare(articleId, submission) {
                         return reject(error);
                     });
 
-                    const req = FigshareApi.uploadFilePart(articleId, fileInfo, part);
+                    const req = FigshareApi.uploadFilePart(endpointSet, articleId, fileInfo, part);
 
                     req.on("error", (error) => {
                         logger.warn(`figshare part upload request failed due to: ${error.toString()} (submission=${submission.id}, articleId=${articleId})`);
@@ -109,7 +111,7 @@ async function uploadPMRArchiveToFigshare(articleId, submission) {
         }).then(({fileInfo}) => {
 
             logger.debug(`completing figshare file upload (submission=${submission.id}, articleId=${articleId})`);
-            return FigshareApi.completeFileUpload(articleId, fileInfo);
+            return FigshareApi.completeFileUpload(endpointSet, articleId, fileInfo);
 
         }).finally(() => {
 
