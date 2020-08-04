@@ -22,6 +22,7 @@ async function uploadPMRArchiveToFigshare(articleId, submission) {
 
     const { workspaceId, changeSetHash } = submission.publishingPmrDetails;
     const archiveDownloadLink = workspaceId && changeSetHash ? `https://models.physiomeproject.org/workspace/${encodeURI(workspaceId)}/@@archive/${encodeURI(changeSetHash)}/tgz` : null;
+    const submissionEndpointSet = submission.figshareArticleType || endpointSet;
 
     return _createTemporaryDirectory(submission.manuscriptId).then(async tempDirectory => {
 
@@ -68,7 +69,7 @@ async function uploadPMRArchiveToFigshare(articleId, submission) {
         return p.then(({size, md5}) => {
 
             logger.debug(`initiate figshare file upload (submission=${submission.id}, articleId=${articleId}, fileName=pmr-model-archive.tar.gz, byteCount=${size}, md5=${md5})`);
-            return FigshareApi.initiateFileUpload(endpointSet, articleId, 'pmr-model-archive.tar.gz', size, md5);
+            return FigshareApi.initiateFileUpload(submissionEndpointSet, articleId, 'pmr-model-archive.tar.gz', size, md5);
 
         }).then(({fileInfo, uploadInfo}) => {
 
@@ -91,7 +92,7 @@ async function uploadPMRArchiveToFigshare(articleId, submission) {
                         return reject(error);
                     });
 
-                    const req = FigshareApi.uploadFilePart(endpointSet, articleId, fileInfo, part);
+                    const req = FigshareApi.uploadFilePart(submissionEndpointSet, articleId, fileInfo, part);
 
                     req.on("error", (error) => {
                         logger.warn(`figshare part upload request failed due to: ${error.toString()} (submission=${submission.id}, articleId=${articleId})`);
@@ -111,7 +112,7 @@ async function uploadPMRArchiveToFigshare(articleId, submission) {
         }).then(({fileInfo}) => {
 
             logger.debug(`completing figshare file upload (submission=${submission.id}, articleId=${articleId})`);
-            return FigshareApi.completeFileUpload(endpointSet, articleId, fileInfo);
+            return FigshareApi.completeFileUpload(submissionEndpointSet, articleId, fileInfo);
 
         }).finally(() => {
 

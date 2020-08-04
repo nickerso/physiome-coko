@@ -157,6 +157,7 @@ instance Submission {
 
         figshareFiles: [File] <set>,
 
+        figshareArticleType: String <input:exclude>,
         figshareArticleId: String <input:exclude>,
         figshareArticleDoi: String <input:exclude>,
         publishingPmrDetails: JSON,

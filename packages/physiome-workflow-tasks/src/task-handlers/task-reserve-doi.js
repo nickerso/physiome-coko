@@ -26,6 +26,13 @@ module.exports = function _setupReserveDoiTask(client) {
             return;
         }
 
+        if (!submission.figshareArticleId) {
+            submission.figshareArticleType = endpointSet;
+            await submission.patchFields(['figshareArticleType']);
+        }
+        // if there is an existing article id, assume the type was default
+        // subsequent function may call a create()
+
         return _reserveDoiForSubmission(submission).then(async article => {
 
             if(!article || !article.doi) {
@@ -62,6 +69,7 @@ function _reserveDoiForSubmission(submission) {
         description: submission.abstract || "No article description was provided at the time of submission."
     };
 
+    const submissionEndpointSet = submission.figshareArticleType || endpointSet;
 
     if(submission.authors && submission.authors instanceof Array && submission.authors.length) {
 
@@ -70,7 +78,7 @@ function _reserveDoiForSubmission(submission) {
         });
     }
 
-    const createArticleIdPromise = !submission.figshareArticleId ? FigshareApi.create(endpointSet, articleData).then(articleId => {
+    const createArticleIdPromise = !submission.figshareArticleId ? FigshareApi.create(submissionEndpointSet, articleData).then(articleId => {
 
         submission.figshareArticleId = "" + articleId;
 
@@ -80,7 +88,7 @@ function _reserveDoiForSubmission(submission) {
 
         ).catch(err => {
 
-            FigshareApi.delete(endpointSet, articleId);
+            FigshareApi.delete(submissionEndpointSet, articleId);
             return Promise.reject(err);
 
         }).then(() => {
@@ -92,12 +100,12 @@ function _reserveDoiForSubmission(submission) {
 
     return createArticleIdPromise.then(figshareArticleId => {
 
-        return FigshareApi.reserveDoi(endpointSet, figshareArticleId).then(() => {
+        return FigshareApi.reserveDoi(submissionEndpointSet, figshareArticleId).then(() => {
             return figshareArticleId;
         });
 
     }).then(figshareArticleId => {
 
-        return FigshareApi.get(endpointSet, figshareArticleId);
+        return FigshareApi.get(submissionEndpointSet, figshareArticleId);
     });
 }

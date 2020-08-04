@@ -75,10 +75,11 @@ async function _cleanupForRejectedSubmission(submission) {
     }
 
     const articleId = submission.figshareArticleId;
+    const submissionEndpointSet = submission.figshareArticleType || endpointSet;
 
     logger.debug(`will delete figshare article (submissionId = ${submission.id}, phase = ${submission.phase}, articleId = ${articleId})`);
 
-    return FigshareApi.delete(endpointSet, articleId).then(() => {
+    return FigshareApi.delete(submissionEndpointSet, articleId).then(() => {
 
         logger.debug(`did delete figshare article (submissionId = ${submission.id}, phase = ${submission.phase}, articleId = ${articleId})`);
 

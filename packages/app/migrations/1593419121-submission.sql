@@ -1,2 +1,2 @@
 ALTER TABLE "submission"
-    ADD COLUMN "payment_amount" int
+    ADD COLUMN "payment_amount" int;
