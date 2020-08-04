@@ -51,6 +51,7 @@ class TaskSendEmail {
             recipientName: recipient.displayName,
             recipientEmail: recipient.email,
             data: {
+                datetime: new Date().toISOString().slice(0, 10),
                 submission,
                 user: recipient,
                 link,

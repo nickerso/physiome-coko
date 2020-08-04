@@ -1,16 +1,22 @@
+const TaskSendEmail = require('./util-task-send-email');
 const logger = require('workflow-utils/logger-with-prefix')('PhysiomeWorkflowTasks/Email-ManuscriptAcceptance');
+
+class TaskPaymentReceivedEmail extends TaskSendEmail {
+
+    constructor(logger) {
+        super('manuscript-payment-received', logger);
+    }
+
+    async formatEmailSubject(submission) {
+        return `confirmation of payment for ${submission.manuscriptId}`;
+    }
+}
 
 module.exports = function _setupEmailPaymentReceivedTask(client) {
 
-    client.subscribe('payment-received-email', async ({ task, taskService }) => {
+    const externalTaskName = 'payment-received-email';
+    const task = new TaskPaymentReceivedEmail(logger);
 
-        // Note: this task doesn't currently send an email message, but has been implemented in place
-        // in case an email does need to be sent in the future.
+    task.configure(client, externalTaskName);
 
-        // Note: if paymentSkipped == true, then we do not want to send this email either.
-
-        logger.debug(`send payment received email task is starting`);
-        logger.debug(`send payment received email task has completed`);
-        return taskService.complete(task);
-    });
 };
