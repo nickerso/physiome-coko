@@ -336,9 +336,7 @@ instance Submission {
 
         { Layout, layout:"submission-view" }
 
-        { FilesListing => figshareFiles, (phase in [SubmissionPhase.Published, SubmissionPhase.Publish]), label: "Figshare Collection" }
-
-        { FileUploader => figshareFiles, (phase in [SubmissionPhase.Paid, SubmissionPhase.SkipPayment]), label:"Figshare Collection", accept:"application/pdf, x-pdf, application/zip", help:"Please upload the PDF of the final paper, and then the zip file containing the files to be uploaded as the final Figshare collection." }
+        { FilesListing => figshareFiles, label: "Figshare Collection" }
 
     }
 
