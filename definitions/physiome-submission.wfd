@@ -155,6 +155,8 @@ instance Submission {
         articleFiles: [File] <set>,
         supplementaryFiles: [File] <set, file-labels, file-types>,
 
+        figshareFiles: [File] <set>,
+
         figshareArticleId: String <input:exclude>,
         figshareArticleDoi: String <input:exclude>,
         publishingPmrDetails: JSON,
@@ -191,7 +193,7 @@ instance Submission {
 
             suitableForPhysiome, manuscriptFormatted, modelImplExecutable, reprodGoalAchieved, modelReproducible, modificationExplained, modelAppropriateStandards, paramSourceStated, provenanceClear, overlapPaperManuscriptCode, articleFitForPublication, modelAnnotated,
 
-    	    publishingPmrDetails
+            publishingPmrDetails, figshareFiles
         }
 
         tasks "owner-submit" {
@@ -329,13 +331,28 @@ instance Submission {
     }
 
 
+    layout "admin-submission-view" {
+
+        { Layout, layout:"submission-view" }
+
+        { FilesListing => figshareFiles, (phase in [SubmissionPhase.Published, SubmissionPhase.Publish]), label: "Figshare Collection" }
+
+        { FileUploader => figshareFiles, (phase in [SubmissionPhase.Paid, SubmissionPhase.SkipPayment]), label:"Figshare Collection", accept:"application/pdf, x-pdf, application/zip", help:"Please upload the PDF of the final paper, and then the zip file containing the files to be uploaded as the final Figshare collection." }
+
+    }
+
+
     layout "admin-submission-editor" {
 
         { ShadowedEditor, unpublishedChangesFlagField:"unpublishedChanges", children:{
 
             { Layout, layout:"submission-editor" }
 
+            { FileUploader => figshareFiles, label:"Figshare Collection", accept:"application/pdf, x-pdf, application/zip", help:"Please upload the PDF of the final paper, and then the zip file containing the files to be uploaded as the final Figshare collection." }
+
         } }
+
+
     }
 
 
@@ -353,7 +370,7 @@ instance Submission {
 
                 { ViewerEditorLayout, heading:"Manuscript Details", viewLabel:"View Submission", editLabel:"Edit Submission", children:{
 
-                    { Layout, layout:"submission-view" }
+                    { Layout, layout:"admin-submission-view" }
 
                     { Layout, layout:"admin-submission-editor" }
 
